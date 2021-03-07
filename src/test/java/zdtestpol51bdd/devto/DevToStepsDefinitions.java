@@ -73,8 +73,8 @@ public class DevToStepsDefinitions {
         searchingPhrase = phrase;
         searchBar.sendKeys(Keys.ENTER);
     }
-    @Then("Top {int} blogs found should have correct phrase in title")
-    public void top_blogs_found_should_have_correct_phrase_in_title(Integer int1){
+    @Then("Top {int} blogs found should have correct phrase in title or snippet")
+    public void top_blogs_found_should_have_correct_phrase_in_title_or_snippet(Integer int1){
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h3.crayons-story__title"))); //h3
         wait.until(ExpectedConditions.attributeContains(By.id("substories"),"class","search-results-loaded"));
         List<WebElement> allPosts = driver.findElements(By.className("crayons-story__body")); // div - caly wpis
@@ -95,5 +95,18 @@ public class DevToStepsDefinitions {
             }
         }
     }
-
+    @When("I play the podcast")
+    public void i_play_the_podcast() {
+        wait.until(ExpectedConditions.titleContains(firstCastTitle));
+        WebElement recordButton = driver.findElement(By.id("record"));
+        recordButton.click();
+    }
+    @Then("Podcast Should be played")
+    public void podcast_should_be_played() {
+        WebElement initializing = driver.findElement(By.className("status-message"));
+        wait.until(ExpectedConditions.invisibilityOf(initializing));
+        WebElement pauseBtn = driver.findElement(By.xpath("//img[contains(@class,'pause-butt')]"));
+        Boolean isPauseBtnVisible = pauseBtn.isDisplayed();
+        Assert.assertTrue(isPauseBtnVisible);
+    }
 }
