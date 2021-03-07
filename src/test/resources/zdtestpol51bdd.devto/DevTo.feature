@@ -8,7 +8,7 @@ Feature: DevTp basic features
     When I click text podcast in main page
     When I click on first cast displayed
     Then I should be redirected to cast site
-Scenario: Search the testing phrase
-  Given I go to devto main page
-  When I search for testing phrase
-  Then Top 3 blogs found should have testing in title
+  Scenario: Search the phrase
+    Given I go to devto main page
+    When I search for "testing" phrase
+    Then Top 3 blogs found should have correct phrase in title

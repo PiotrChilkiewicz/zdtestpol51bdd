@@ -18,77 +18,63 @@ import java.util.List;
 import java.util.Locale;
 
 public class DevToStepsDefinitions {
-
     WebDriver driver;
     WebDriverWait wait;
-    WebElement webElement;
     String firstBlogTitle;
     String firstCastTitle;
-    private Integer int1;
-
-
+    String searchingPhrase;
     @Before
-    public void setup() {
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
-        System.out.println("Before");
+    public void setup(){
+        System.setProperty("webdriver.chrome.driver","src/main/resources/chromedriver.exe");
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
+        wait = new WebDriverWait(driver,10);
     }
-
     @Given("I go to devto main page")
     public void i_go_to_devto_main_page() {
-        System.out.println("Given");
         driver.get("https://dev.to");
     }
-
     @When("I click on first blog displayed")
     public void i_click_on_first_blog_displayed() {
-        System.out.println("When");
         WebElement firstBlog = driver.findElement(By.cssSelector("h2.crayons-story__title > a"));
         firstBlogTitle = firstBlog.getText();
         firstBlog.click();
     }
-
-    @Then("I should be redirected to blog site")
-    public void i_should_be_redirected_to_blog_site() {
-        System.out.println("Then");
+    @Then("I should be redirected to blog page")
+    public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
         WebElement blogTitle = driver.findElement(By.tagName("h1"));
         String blogTitleText = blogTitle.getText();
-        System.out.println("to jest tytuł mojego bloga: " + blogTitleText);
         Assert.assertEquals(firstBlogTitle, blogTitleText);
     }
-    @When("I click text podcast in main page")
-    public void i_click_text_podcast_in_main_page() {
+    @When("I go to podcast section")
+    public void i_go_to_podcast_section() {
         WebElement podcast = driver.findElement(By.linkText("Podcasts"));
         podcast.click();
     }
-
-    @When("I click on first cast displayed")
-    public void i_click_on_first_cast_displayed() {
+    @When("I click on first podcast on the list")
+    public void i_click_on_first_podcast_on_the_list() {
         wait.until(ExpectedConditions.titleContains("Podcasts"));
         WebElement firstCast = driver.findElement(By.tagName("h3"));
         firstCastTitle = firstCast.getText();
         firstCastTitle = firstCastTitle.replace("podcast","");
         firstCast.click();
     }
-
-    @Then("I should be redirected to cast site")
-    public void i_should_be_redirected_to_cast_site(){
+    @Then("I should be redirected to podcast page")
+    public void i_should_be_redirected_to_podcast_page() {
         wait.until(ExpectedConditions.titleContains(firstCastTitle));
         WebElement castTitle = driver.findElement(By.tagName("h1"));
         String castTitleText = castTitle.getText();
         Assert.assertEquals(firstCastTitle, castTitleText);
-
     }
-    @When("I search for testing phrase")
-    public void i_search_for_testing_phrase() {
+    @When("I search for {string} phrase")
+    public void i_search_for_phrase(String phrase) {
         WebElement searchBar = driver.findElement(By.name("q"));
-        searchBar.sendKeys("testing");
+        searchBar.sendKeys(phrase);
+        searchingPhrase = phrase;
         searchBar.sendKeys(Keys.ENTER);
     }
-    @Then("Top {int} blogs found should have testing in title")
-    public void top_blogs_found_should_have_testing_in_title(Integer int1) {
+    @Then("Top {int} blogs found should have correct phrase in title")
+    public void top_blogs_found_should_have_correct_phrase_in_title(Integer int1){
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h3.crayons-story__title"))); //h3
         wait.until(ExpectedConditions.attributeContains(By.id("substories"),"class","search-results-loaded"));
         List<WebElement> allPosts = driver.findElements(By.cssSelector(".crayons-story__title > a")); // a
@@ -96,8 +82,8 @@ public class DevToStepsDefinitions {
             for (int i=0;i<int1;i++){
                 WebElement singlePost = allPosts.get(i);
                 String singlePostTitle = singlePost.getText().toLowerCase(); // a wyciagaj text
-                Boolean isTestingTitle = singlePostTitle.contains("testing");
-                Assert.assertTrue(isTestingTitle);
+                Boolean isTestingInTitle = singlePostTitle.contains(searchingPhrase);
+                Assert.assertTrue(isTestingInTitle);
             }
         }
     }
