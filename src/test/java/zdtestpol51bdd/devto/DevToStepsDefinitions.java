@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import zdtestpol51bdd.devto.pages.MainPage;
+import zdtestpol51bdd.devto.pages.PodcastListPage;
 import zdtestpol51bdd.devto.pages.SingleBlogPage;
 
 import java.util.List;
@@ -26,9 +27,11 @@ public class DevToStepsDefinitions {
     String firstBlogTitle;
     String firstCastTitle;
     String searchingPhrase;
+    String podcastBtn;
 
     MainPage mainPage;
     SingleBlogPage singleBlogPage;
+    PodcastListPage podcastListPage;
 
     @Before
     public void setup() {
@@ -51,31 +54,29 @@ public class DevToStepsDefinitions {
     @Then("I should be redirected to blog page")
     public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
-        singleBlogPage=new SingleBlogPage(driver);
+        singleBlogPage = new SingleBlogPage(driver);
         String blogTitleText = singleBlogPage.blogTitle.getText();
         Assert.assertEquals(firstBlogTitle, blogTitleText);
     }
 
     @When("I go to podcast section")
     public void i_go_to_podcast_section() {
-        WebElement podcast = driver.findElement(By.linkText("Podcasts"));
-        podcast.click();
+        mainPage.goToPodcastSection();
     }
 
     @When("I click on first podcast on the list")
     public void i_click_on_first_podcast_on_the_list() {
         wait.until(ExpectedConditions.titleContains("Podcasts"));
-        WebElement firstCast = driver.findElement(By.tagName("h3"));
-        firstCastTitle = firstCast.getText();
+        podcastListPage = new PodcastListPage(driver);
+        firstCastTitle = podcastListPage.firstCast.getText();
         firstCastTitle = firstCastTitle.replace("podcast", "");
-        firstCast.click();
+        podcastListPage.selectFirstPodcast();
     }
 
     @Then("I should be redirected to podcast page")
     public void i_should_be_redirected_to_podcast_page() {
         wait.until(ExpectedConditions.titleContains(firstCastTitle));
-        WebElement castTitle = driver.findElement(By.tagName("h1"));
-        String castTitleText = castTitle.getText();
+        String castTitleText = singleBlogPage.blogTitle.getText();
         Assert.assertEquals(firstCastTitle, castTitleText);
     }
 

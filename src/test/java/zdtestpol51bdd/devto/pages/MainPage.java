@@ -11,14 +11,21 @@ public class MainPage {
 
     @FindBy(css = "h2.crayons-story__title > a")
     public WebElement firstBlog;
+    @FindBy(linkText = "Podcasts")
+    public WebElement podcastBtn;
 
-    public MainPage(WebDriver driver){
+
+    public MainPage(WebDriver driver) {
         this.driver = driver;
         this.driver.get(url);
         PageFactory.initElements(this.driver, this);
     }
 
-    public void selectFirstBlog(){
+    public void selectFirstBlog() {
         firstBlog.click();
+    }
+
+    public void goToPodcastSection() {
+        podcastBtn.click();
     }
 }
